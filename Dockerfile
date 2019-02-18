@@ -1,4 +1,5 @@
-FROM php:7.1
+FROM php:7.2
+
 RUN apt-get update && apt-get install -y \
       libfreetype6-dev \
       libjpeg62-turbo-dev \
@@ -7,7 +8,7 @@ RUN apt-get update && apt-get install -y \
       zlib1g-dev \
       libicu-dev \
       libpq-dev \
-      g++ \
+      git \
       && docker-php-ext-install -j$(nproc) iconv mcrypt \
       && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
       && docker-php-ext-install -j$(nproc) gd \
@@ -23,17 +24,12 @@ RUN apt-get update && apt-get install -y \
       && pecl install zip \
       && docker-php-ext-enable zip
 
-#its required for composer
-      RUN apt-get install -y git
+WORKDIR "/tmp"
 
-##composer
-      WORKDIR "/tmp"
+RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
+RUN php composer-setup.php --install-dir=/bin --filename=composer
+RUN php -r "unlink('composer-setup.php');"
 
-      RUN php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
-      RUN php composer-setup.php --install-dir=/bin --filename=composer
-      RUN php -r "unlink('composer-setup.php');"
+WORKDIR "/var/www"
+RUN usermod -u 1000 www-data
 
-      WORKDIR "/var/www"
-      RUN usermod -u 1000 www-data
-
-      CMD ["php"]

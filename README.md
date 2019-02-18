@@ -1,6 +1,5 @@
 # PHP7 Image for Symfony Development
 
-
 ### Includes:
 
 - composer
@@ -14,5 +13,4 @@
 - iconv
 - mcrypt
 - gd
-
 

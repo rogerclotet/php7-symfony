@@ -1,6 +1,6 @@
 # PHP7 Image for Symfony Development
 
-### Includes:
+## Includes:
 
 - composer
 - git
